@@ -1,27 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import axios from './../Interceptors/index'
+import React, { lazy, Suspense, useEffect, useState } from 'react'
+import axios from '../../Interceptors/index'
 import axiosDefault from 'axios'
 import SinglePost from './singlePost'
+// import LazyLoad from '../../LazyLoad'
+
+const LazyLoad = lazy(()=>{
+    return import(/*webpackChunkName:'LGGG'*/'./../../LazyLoad/index')
+})
 
 const Post = () => {
     const [loading, setLoading] = useState(true)
     const [posts, setPosts] = useState({})
     const [singlePostData, setSinglePostData] = useState({})
     const [selectedPost, setSelectedPost] = useState(null)
-    const [formData, setFormData] = useState({name:"",book:""})
+    const [formData, setFormData] = useState({ name: "", book: "" })
+    const [show, setShow] = useState(false)
 
     const handleChange = (e) => {
         const { target } = e
         setFormData(prev => ({ ...prev, [target.name]: target.value }))
     }
 
-    const handleCreatePost = async(e) => {
+    const handleCreatePost = async (e) => {
         e.preventDefault()
         try {
             const res = await axios.post('/post.json', JSON.stringify(formData))
-            if(res && res.data){
+            if (res && res.data) {
                 getPostData()
-                setFormData({name:"",book:""})
+                setFormData({ name: "", book: "" })
             }
         }
         catch (err) {
@@ -60,7 +66,7 @@ const Post = () => {
         }
     }
 
-    const handleDeletePost = async(e,id)=> {
+    const handleDeletePost = async (e, id) => {
         e.stopPropagation()
         try {
             await axios.delete(`/post/${id}.json`)
@@ -79,13 +85,19 @@ const Post = () => {
             <h1>Post</h1>
             <h4>Create post</h4>
             <form onSubmit={handleCreatePost.bind(this)}>
-                <input type={"text"} placeholder="name" name="name" onChange={handleChange} value={formData.name}/>
-                <input type={"text"} placeholder="book" name="book" onChange={handleChange} value={formData.book}/>
+                <input type={"text"} placeholder="name" name="name" onChange={handleChange} value={formData.name} />
+                <input type={"text"} placeholder="book" name="book" onChange={handleChange} value={formData.book} />
                 <button type='submit'>Add Post</button>
             </form>
             {Object.keys(posts).map(i => <h4 key={i} onClick={handlePostClick.bind(this, i)}>{`${posts[i].book} -by ${posts[i].name}`}<span onClick={(e) => {
-                handleDeletePost(e,i)
-            }}>delete</span></h4>)}
+                handleDeletePost(e, i)
+            }}>{" "}delete</span></h4>)}
+            <div onClick={() => {
+                setShow(prev => !prev)
+            }}>SHOW</div>
+            <Suspense fallback={<h1>LLLLLL</h1>}>
+                {show && <LazyLoad />}
+            </Suspense>
             {!!Object.keys(singlePostData).length && <SinglePost name={singlePostData.name} />}
         </>
     )

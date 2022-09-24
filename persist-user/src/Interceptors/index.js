@@ -6,4 +6,8 @@ const axiosInstance = axios.create({
 
 axiosInstance.defaults.headers.common["authorization"] = "known auth"
 
+// axios.interceptors.request.use(() => {
+
+// })
+
 export default axiosInstance
