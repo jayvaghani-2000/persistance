@@ -8,11 +8,11 @@ const About = () => {
     const param = useParams()
     const name = search.get('name')
     console.log('name', name)
-    useEffect(() => {
-        setTimeout(() => {
-            navigate("/",{replace:false})
-        },3000)
-    },[])
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         navigate("/",{replace:false})
+    //     },3000)
+    // },[])
     return (
         <>
             <div>About {name}</div>

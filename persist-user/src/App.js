@@ -5,21 +5,26 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import About from './components/About';
 import Home from './components/Home';
+import Counter from './components/Counter';
+import { Provider } from 'react-redux'
+import store from './store/store';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Header />
-      <div>
-        <Routes>
-          <Route path="/" element={<Home />}/>
-          <Route path="/about/*" element={<About/>}/>
-          <Route />
-          <Route path='/post' element = {<Post />} />
-        </Routes>
-      </div>
-      <Footer/>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Header />
+        <Counter />
+        <div>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about/*" element={<About />} />
+            <Route path='/post' element={<Post />} />
+          </Routes>
+        </div>
+        <Footer />
+      </BrowserRouter>
+    </Provider>
   );
 }
 

@@ -2,20 +2,24 @@ import React, { lazy, Suspense, useEffect, useState } from 'react'
 import axios from '../../Interceptors/index'
 import axiosDefault from 'axios'
 import SinglePost from './singlePost'
+import { useDispatch, useSelector } from 'react-redux'
+import { getPostThunk } from '../../store/postSlice'
 // import LazyLoad from '../../LazyLoad'
-
 const LazyLoad = lazy(()=>{
     return import(/*webpackChunkName:'LGGG'*/'./../../LazyLoad/index')
 })
 
+
+
 const Post = () => {
     const [loading, setLoading] = useState(true)
-    const [posts, setPosts] = useState({})
+    const {post: posts} = useSelector(state => state.post)
+    // const [posts, setPosts] = useState({})
     const [singlePostData, setSinglePostData] = useState({})
     const [selectedPost, setSelectedPost] = useState(null)
     const [formData, setFormData] = useState({ name: "", book: "" })
     const [show, setShow] = useState(false)
-
+    const dispatch = useDispatch()
     const handleChange = (e) => {
         const { target } = e
         setFormData(prev => ({ ...prev, [target.name]: target.value }))
@@ -26,7 +30,8 @@ const Post = () => {
         try {
             const res = await axios.post('/post.json', JSON.stringify(formData))
             if (res && res.data) {
-                getPostData()
+                dispatch(getPostThunk())
+                // getPostData()
                 setFormData({ name: "", book: "" })
             }
         }
@@ -35,19 +40,21 @@ const Post = () => {
         }
     }
 
-    const getPostData = async () => {
-        try {
-            const res = await axiosDefault.get('https://userpersistance-default-rtdb.firebaseio.com/post.json')
-            setPosts(res.data ? res.data : {})
-        }
-        catch (err) {
+    // const getPostData = async () => {
+    //     try {
+    //         const res = await axiosDefault.get('https://userpersistance-default-rtdb.firebaseio.com/post.json')
+    //         setPosts(res.data ? res.data : {})
+    //     }
+    //     catch (err) {
 
-        } finally {
-            setLoading(false)
-        }
-    }
+    //     } finally {
+    //         setLoading(false)
+    //     }
+    // }
+
     useEffect(() => {
-        getPostData()
+        // getPostData()
+        dispatch(getPostThunk())
 
     }, [])
 
@@ -70,16 +77,17 @@ const Post = () => {
         e.stopPropagation()
         try {
             await axios.delete(`/post/${id}.json`)
-            getPostData()
+            dispatch(getPostThunk())
+            // getPostData()
         }
         catch (err) {
 
         }
     }
 
-    if (loading) {
-        return <h1>Loading....</h1>
-    }
+    // if (loading) {
+    //     return <h1>Loading....</h1>
+    // }
     return (
         <>
             <h1>Post</h1>
@@ -89,7 +97,7 @@ const Post = () => {
                 <input type={"text"} placeholder="book" name="book" onChange={handleChange} value={formData.book} />
                 <button type='submit'>Add Post</button>
             </form>
-            {Object.keys(posts).map(i => <h4 key={i} onClick={handlePostClick.bind(this, i)}>{`${posts[i].book} -by ${posts[i].name}`}<span onClick={(e) => {
+            {posts.map(i => <h4 key={i.id} onClick={handlePostClick.bind(this, i)}>{`${i.book} -by ${i.name}`}<span onClick={(e) => {
                 handleDeletePost(e, i)
             }}>{" "}delete</span></h4>)}
             <div onClick={() => {
