@@ -8,6 +8,7 @@ import Home from './components/Home';
 import Counter from './components/Counter';
 import { Provider } from 'react-redux'
 import store from './store/store';
+import SignUp from './components/SignUp';
 
 function App() {
   return (
@@ -18,8 +19,9 @@ function App() {
         <div>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/about/*" element={<About />} />
-            <Route path='/post' element={<Post />} />
+            <Route path='/post/*' element={<Post />} />
           </Routes>
         </div>
         <Footer />

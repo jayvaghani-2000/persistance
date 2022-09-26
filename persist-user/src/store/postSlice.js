@@ -32,3 +32,28 @@ export const getPostThunk = () => {
         }
     }
 }
+
+export const postPostThunk = (data) => {
+    return async(dispatch, getState) => {
+        try {
+            const res = await axios.post('/post.json', JSON.stringify(data))
+            if (res && res.data) {
+                dispatch(getPostThunk())
+            }
+        } catch {
+
+        }
+    }
+}
+export const updatePostThunk = (id,data) => {
+    return async(dispatch, getState) => {
+        try {
+            const res = await axios.put(`/post/${id}.json`, JSON.stringify(data))
+            if (res && res.data) {
+                dispatch(getPostThunk())
+            }
+        } catch {
+
+        }
+    }
+}
