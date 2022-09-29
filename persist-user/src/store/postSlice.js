@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from "./../Interceptors/index";
+import { autoLogin } from "./authSlice";
 
 const initialState = {
     post:[]
@@ -22,8 +23,12 @@ export default postSlice.reducer
 
 export const getPostThunk = () => {
     return async(dispatch, getState) => {
+        autoLogin(dispatch)
+        const state = getState().auth
+        console.log('state', state)
+        if(!state.authenticated) return
         try {
-            const res = await axios.get('https://userpersistance-default-rtdb.firebaseio.com/post.json')
+            const res = await axios.get(`/post.json`)
             const parseData = Object.keys(res.data).map(id => ({...res.data[id], id}))
             console.log('parseData', parseData)
             dispatch(setPost(parseData))
@@ -35,6 +40,7 @@ export const getPostThunk = () => {
 
 export const postPostThunk = (data) => {
     return async(dispatch, getState) => {
+        
         try {
             const res = await axios.post('/post.json', JSON.stringify(data))
             if (res && res.data) {
