@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { signUpThunk } from '../../store/authSlice'
 
 const SignUp = (props) => {
+    const dispatch = useDispatch()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const handleSignUp = (e) => {
-        
+        e.preventDefault()
+        dispatch(signUpThunk(email, password))
     }
     return (
         <div>

@@ -6,19 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
 
 axios.defaults.baseURL = "https://userpersistance-default-rtdb.firebaseio.com"
-axios.defaults.headers.common["authorization"] = "not known"
 
-axios.interceptors.request.use(req => {
-    console.log('req', req)
-    req.headers.name = "jay vaghani"
-    return req
-
-})
-axios.interceptors.response.use(res => {
-    console.log('req', res)
-    return res
-
-})
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
